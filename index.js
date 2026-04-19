@@ -21,7 +21,6 @@ const TOKEN = process.env.DISCORD_TOKEN;
 
 // 👉 Put your staff channel ID here
 const STAFF_CHANNEL_ID = "1495031832784277514";
-
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
