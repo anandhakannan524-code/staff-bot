@@ -25,14 +25,10 @@ client.once('ready', () => {
 });
 
 
-// 🧪 DEBUG (checks if bot reads messages)
-client.on('messageCreate', (message) => {
-  console.log("Got message:", message.content);
-});
-
-
-// 📌 Apply panel command
+// ✅ COMBINED DEBUG + COMMAND
 client.on('messageCreate', async (message) => {
+  console.log("Got message:", message.content);
+
   if (message.author.bot) return;
 
   if (message.content === "!applypanel") {
