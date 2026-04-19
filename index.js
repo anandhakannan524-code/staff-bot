@@ -18,14 +18,16 @@ const client = new Client({
 });
 
 const TOKEN = process.env.DISCORD_TOKEN;
-const STAFF_CHANNEL_ID = "1495031832784277514";
+
+// 🔒 YOUR PRIVATE STAFF CHANNEL ID
+const STAFF_CHANNEL_ID = "1495304467674038312";
 
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
 
-// ✅ COMBINED DEBUG + COMMAND
+// 📌 Apply panel command
 client.on('messageCreate', async (message) => {
   console.log("Got message:", message.content);
 
@@ -103,10 +105,11 @@ client.on('interactionCreate', async (interaction) => {
         }
       }
 
-      // 📤 Send answers to staff channel
+      // 📤 SEND ONLY TO PRIVATE STAFF CHANNEL
       const channel = await client.channels.fetch(STAFF_CHANNEL_ID);
 
       let result = `📋 **New Staff Application**\n\n`;
+      result += `👤 User: <@${user.id}>\n\n`;
 
       questions.forEach((q, i) => {
         result += `**${q}**\n${answers[i]}\n\n`;
