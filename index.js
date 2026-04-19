@@ -17,7 +17,7 @@ const client = new Client({
 });
 
 // 🔐 Use Railway environment variable
-const TOKEN = process.env.MTQ5NTAxOTkzMjYyOTQ3MTMxMw.G2c5g2.NrEk-iECJ8SEA8qipR4W5M73xBWIacoqLkiRWAconst;
+const TOKEN = process.env.DISCORD_TOKEN;
 
 // 👉 Put your staff channel ID here
 const STAFF_CHANNEL_ID = "1495031832784277514";
