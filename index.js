@@ -66,17 +66,37 @@ client.on('interactionCreate', async (interaction) => {
 
       let answers = [];
 
-      for (let q of questions) {
-        await dm.send(q);
+     const filter = (m) => m.author.id === user.id;
 
-        const collected = await dm.awaitMessages({
-          max: 1,
-          time: 60000,
-          errors: ['time']
-        });
+for (let q of questions) {
+  await dm.send(q);
 
-        answers.push(collected.first().content);
-      }
+try {
+  const collected = await dm.awaitMessages({
+    filter,
+    max: 1,
+    time: 120000,
+    errors: ['time'] // 
+  });
+
+    if (!collected.first()) {
+      await dm.send("⏰ You didn’t answer in time. Application cancelled.");
+      return;
+    }
+
+    answers.push(collected.first().content);
+
+} catch (err) {
+  console.error(err);
+
+  if (err.message === 'time') {
+    await dm.send("⏰ You didn’t answer in time. Application cancelled.");
+  } else {
+    await dm.send("❌ Unexpected error occurred. Try again later.");
+  }
+
+  return;
+}
 
       // 📤 Send to staff channel
       const channel = await client.channels.fetch(STAFF_CHANNEL_ID);
