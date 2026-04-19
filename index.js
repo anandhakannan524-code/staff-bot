@@ -11,23 +11,29 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds, 
     GatewayIntentBits.GuildMessages, 
-    GatewayIntentBits.DirectMessages
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.MessageContent
   ],
   partials: [Partials.Channel]
 });
 
-// 🔐 Use Railway environment variable
 const TOKEN = process.env.DISCORD_TOKEN;
-
-// 👉 Put your staff channel ID here
 const STAFF_CHANNEL_ID = "1495031832784277514";
+
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
-// 📌 Command to send apply button
+
+// 🧪 DEBUG (checks if bot reads messages)
+client.on('messageCreate', (message) => {
+  console.log("Got message:", message.content);
+});
+
+
+// 📌 Apply panel command
 client.on('messageCreate', async (message) => {
-  console.log("Message received:", message.content);
+  if (message.author.bot) return;
 
   if (message.content === "!applypanel") {
     console.log("Command triggered");
@@ -45,6 +51,7 @@ client.on('messageCreate', async (message) => {
     });
   }
 });
+
 
 // 🔘 Button interaction
 client.on('interactionCreate', async (interaction) => {
@@ -67,41 +74,40 @@ client.on('interactionCreate', async (interaction) => {
       ];
 
       let answers = [];
+      const filter = (m) => m.author.id === user.id;
 
-     const filter = (m) => m.author.id === user.id;
+      for (let q of questions) {
+        await dm.send(q);
 
-for (let q of questions) {
-  await dm.send(q);
+        try {
+          const collected = await dm.awaitMessages({
+            filter,
+            max: 1,
+            time: 120000,
+            errors: ['time']
+          });
 
-  try {
-    const collected = await dm.awaitMessages({
-      filter,
-      max: 1,
-      time: 120000,
-      errors: ['time']
-    });
+          if (!collected.first()) {
+            await dm.send("⏰ You didn’t answer in time. Application cancelled.");
+            return;
+          }
 
-    if (!collected.first()) {
-      await dm.send("⏰ You didn’t answer in time. Application cancelled.");
-      return;
-    }
+          answers.push(collected.first().content);
 
-    answers.push(collected.first().content);
+        } catch (err) {
+          console.error(err);
 
-  } catch (err) {
-    console.error(err);
+          if (err.message === 'time') {
+            await dm.send("⏰ You didn’t answer in time. Application cancelled.");
+          } else {
+            await dm.send("❌ Unexpected error occurred.");
+          }
 
-    if (err.message === 'time') {
-      await dm.send("⏰ You didn’t answer in time. Application cancelled.");
-    } else {
-      await dm.send("❌ Unexpected error occurred.");
-    }
+          return;
+        }
+      }
 
-    return;
-  }
-}
-
-      // 📤 Send to staff channel
+      // 📤 Send answers to staff channel
       const channel = await client.channels.fetch(STAFF_CHANNEL_ID);
 
       let result = `📋 **New Staff Application**\n\n`;
@@ -115,6 +121,7 @@ for (let q of questions) {
       await dm.send("✅ Your application has been submitted!");
 
     } catch (err) {
+      console.error(err);
       await user.send("❌ You didn’t respond in time or your DMs are closed.");
     }
   }
