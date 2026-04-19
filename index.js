@@ -71,13 +71,13 @@ client.on('interactionCreate', async (interaction) => {
 for (let q of questions) {
   await dm.send(q);
 
-try {
-  const collected = await dm.awaitMessages({
-    filter,
-    max: 1,
-    time: 120000,
-    errors: ['time'] // 
-  });
+  try {
+    const collected = await dm.awaitMessages({
+      filter,
+      max: 1,
+      time: 120000,
+      errors: ['time']
+    });
 
     if (!collected.first()) {
       await dm.send("⏰ You didn’t answer in time. Application cancelled.");
@@ -86,16 +86,17 @@ try {
 
     answers.push(collected.first().content);
 
-} catch (err) {
-  console.error(err);
+  } catch (err) {
+    console.error(err);
 
-  if (err.message === 'time') {
-    await dm.send("⏰ You didn’t answer in time. Application cancelled.");
-  } else {
-    await dm.send("❌ Unexpected error occurred. Try again later.");
+    if (err.message === 'time') {
+      await dm.send("⏰ You didn’t answer in time. Application cancelled.");
+    } else {
+      await dm.send("❌ Unexpected error occurred.");
+    }
+
+    return;
   }
-
-  return;
 }
 
       // 📤 Send to staff channel
