@@ -1,7 +1,12 @@
- {
+{
   "name": "staff-bot",
   "version": "1.0.0",
+  "description": "Discord staff application bot",
   "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "discord.js": "^14.13.0"
   }
