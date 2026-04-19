@@ -28,7 +28,10 @@ client.once('ready', () => {
 
 // 📌 Command to send apply button
 client.on('messageCreate', async (message) => {
+  console.log("Message received:", message.content);
+
   if (message.content === "!applypanel") {
+    console.log("Command triggered");
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
